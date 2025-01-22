@@ -50,7 +50,8 @@ jobs:
         uses: google-github-actions/setup-gcloud@v0.5.0
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
-          credentials_json: ${{ secrets.GCP_KEY }}
+          service_account_key: ${{ secrets.GCP_KEY }}
+          export_default_credentials: true
 
       # Build Docker image with the processed data and the trained model
       - name: Build Docker image
