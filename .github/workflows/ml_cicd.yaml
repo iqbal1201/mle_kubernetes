@@ -76,6 +76,10 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+    env:
+      GCP_PROJECT_ID: ml-kubernetes-448516
+      GKE_CLUSTER_NAME: insurance-cluster
+      GKE_ZONE: us-central1
     needs: build-model
     steps:
       # Checkout the repository again in the deploy job
