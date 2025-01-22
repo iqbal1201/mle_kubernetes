@@ -45,15 +45,22 @@ jobs:
       #   run: |
       #     cp model_tf.h5 .
 
+      # Login to GCR
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.5.0
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          credentials_json: ${{ secrets.GCP_KEY }}
+
       # Build Docker image with the processed data and the trained model
       - name: Build Docker image
         run: |
           docker build -t gcr.io/$GCP_PROJECT_ID/insurance-ml-app:$GITHUB_SHA .
 
-      # Log in to Google Container Registry (GCR)
-      - name: Log in to Google Container Registry
-        run: |
-          echo ${{ secrets.GCP_KEY }} | docker login -u _json_key --password-stdin https://gcr.io
+      # # Log in to Google Container Registry (GCR)
+      # - name: Log in to Google Container Registry
+      #   run: |
+      #     echo ${{ secrets.GCP_KEY }} | docker login -u _json_key --password-stdin https://gcr.io
 
       # Push Docker image to Google Container Registry (GCR)
       - name: Push Docker image to GCR
