@@ -21,7 +21,7 @@ model = keras.Sequential([
     layers.Dense(1, activation='linear')
 ])
 
-model.compile(loss = tf.keras.losses.MeanAbsoluteError,
+model.compile(loss = 'mae',
                optimizer=tf.keras.optimizers.Adam(learning_rate=0.01),
                metrics=['mae'])
 
