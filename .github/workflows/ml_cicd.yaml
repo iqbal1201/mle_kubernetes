@@ -11,6 +11,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      GCP_PROJECT_ID: ml-kubernetes-448516
 
     steps:
       # Checkout the repository to get the code
@@ -46,7 +48,7 @@ jobs:
       # Build Docker image with the processed data and the trained model
       - name: Build Docker image
         run: |
-          docker build -t gcr.io/${{ env.GCP_PROJECT_ID }}/insurance-ml-app:$GITHUB_SHA .
+          docker build -t gcr.io/$GCP_PROJECT_ID/insurance-ml-app:$GITHUB_SHA .
 
       # Log in to Google Container Registry (GCR)
       - name: Log in to Google Container Registry
@@ -56,7 +58,7 @@ jobs:
       # Push Docker image to Google Container Registry (GCR)
       - name: Push Docker image to GCR
         run: |
-          docker push gcr.io/${{ env.GCP_PROJECT_ID }}/insurance-ml-app:$GITHUB_SHA
+          docker push gcr.io/$GCP_PROJECT_ID/insurance-ml-app:$GITHUB_SHA
 
   deploy:
     runs-on: ubuntu-latest
