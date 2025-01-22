@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: insurance-ml-app
-        image: gcr.io/your-project/insurance-ml-app:v1
+        image: gcr.io/$GCP_PROJECT_ID/insurance-ml-app:$GITHUB_SHA
         ports:
         - containerPort: 8080
