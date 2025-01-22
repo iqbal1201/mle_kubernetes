@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GCP_PROJECT_ID: ml-kubernetes-448516
+      GKE_CLUSTER_NAME: insurance-cluster
+      GKE_ZONE: us-central1
 
     steps:
       # Checkout the repository to get the code
@@ -85,12 +87,13 @@ jobs:
         uses: google-github-actions/setup-gcloud@v0.5.0
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
-          credentials_json: ${{ secrets.GCP_KEY }}
+          service_account_key: ${{ secrets.GCP_KEY }}
+          export_default_credentials: true
 
       # Configure kubectl to interact with GKE
       - name: Configure kubectl
         run: |
-          gcloud container clusters get-credentials ${{ env.GKE_CLUSTER_NAME }} --zone ${{ env.GKE_ZONE }} --project ${{ env.GCP_PROJECT_ID }}
+          gcloud container clusters get-credentials $GKE_CLUSTER_NAME --zone $GKE_ZONE --project $GCP_PROJECT_ID
 
       # Deploy the app to GKE
       - name: Deploy to GKE
