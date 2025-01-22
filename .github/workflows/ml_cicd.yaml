@@ -39,9 +39,9 @@ jobs:
         run: |
           python model_train.py
 
-      - name: Copy model_tf.h5 for Docker build
-        run: |
-          cp model_tf.h5 .
+      # - name: Copy model_tf.h5 for Docker build
+      #   run: |
+      #     cp model_tf.h5 .
 
       # Build Docker image with the processed data and the trained model
       - name: Build Docker image
