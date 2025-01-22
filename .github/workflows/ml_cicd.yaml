@@ -9,7 +9,7 @@ on:
       - main  # Trigger workflow on pull request to the 'main' branch
 
 jobs:
-  build:
+  build-model:
     runs-on: ubuntu-latest
     env:
       GCP_PROJECT_ID: ml-kubernetes-448516
@@ -52,6 +52,10 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_KEY }}
           export_default_credentials: true
+
+      - name: Authenticate Docker to Google Container Registry (GCR)
+        run: |
+          gcloud auth configure-docker
 
       # Build Docker image with the processed data and the trained model
       - name: Build Docker image
