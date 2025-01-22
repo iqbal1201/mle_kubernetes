@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ml-app-service
+  name: insurance-ml-app-new
 spec:
   selector:
     app: insurance-ml-app
