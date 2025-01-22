@@ -5,8 +5,9 @@ from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 import pickle
 import numpy as np
+import os
 
-data_path = r'C:\Iqbal\Project\ml_kubernetes\src\insurance.csv'
+data_path = os.path.join(os.path.dirname(__file__), 'src', 'insurance.csv')
 df = pd.read_csv(data_path, delimiter=',')
 
 
