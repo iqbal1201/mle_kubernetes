@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: insurance-ml-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: insurance-ml-app
+  template:
+    metadata:
+      labels:
+        app: insurance-ml-app
+    spec:
+      containers:
+      - name: insurance-ml-app
+        image: gcr.io/your-project/insurance-ml-app:v1
+        ports:
+        - containerPort: 8080
