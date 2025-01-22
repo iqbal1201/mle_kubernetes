@@ -46,7 +46,7 @@ jobs:
       # Build Docker image with the processed data and the trained model
       - name: Build Docker image
         run: |
-          docker build -t gcr.io/$GCP_PROJECT_ID/insurance-ml-app:$GITHUB_SHA .
+          docker build -t gcr.io/${{ env.PROJECT_ID }}/insurance-ml-app:$GITHUB_SHA .
 
       # Log in to Google Container Registry (GCR)
       - name: Log in to Google Container Registry
@@ -56,7 +56,7 @@ jobs:
       # Push Docker image to Google Container Registry (GCR)
       - name: Push Docker image to GCR
         run: |
-          docker push gcr.io/$GCP_PROJECT_ID/insurance-ml-app:$GITHUB_SHA
+          docker push gcr.io/${{ env.PROJECT_ID }}/insurance-ml-app:$GITHUB_SHA
 
   deploy:
     runs-on: ubuntu-latest
@@ -76,7 +76,7 @@ jobs:
       # Configure kubectl to interact with GKE
       - name: Configure kubectl
         run: |
-          gcloud container clusters get-credentials $GKE_CLUSTER_NAME --zone $GKE_ZONE --project ${{ secrets.GCP_PROJECT_ID }}
+          gcloud container clusters get-credentials ${{ env.GKE_CLUSTER_NAME }} --zone ${{ env.GKE_ZONE }} --project ${{ env.GCP_PROJECT_ID }}
 
       # Deploy the app to GKE
       - name: Deploy to GKE
