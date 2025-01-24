@@ -43,9 +43,9 @@ jobs:
           pip install -r requirements.txt
           pip install kfp google-cloud-storage google-cloud-aiplatform google-auth python-dotenv
 
-      - name: Create .env file python
+      - name: Create json file python
         run: |
-          echo "GCP_KEY=${{ secrets.GCP_KEY }}" >> ./.env
+          echo "${{ secrets.GCP_KEY_JSON }}" > service-account-key.json
 
       # Step 1: Running Pipeline
       - name: Model Pipeline

@@ -11,22 +11,12 @@ from tensorflow.keras.optimizers import Adam
 from google.oauth2 import service_account
 import json
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 
-gcp_key = os.getenv("GCP_KEY")
-gcp_key = gcp_key.replace("\n", "")
-
-if not gcp_key:
-    raise ValueError("GCP_KEY environment variable is not set.")
-
-# Parse the service account key from JSON string
-service_account_info = json.loads(gcp_key)
+credentials_path = "service-account-key.json"
 
 # Create credentials from the service account info
-credentials = service_account.Credentials.from_service_account_info(service_account_info)
+credentials = service_account.Credentials.from_service_account_info(credentials_path)
 aiplatform.init(project="ml-kubernetes-448516", location="us-central1", credentials =credentials)
 
 # Preprocessing component
