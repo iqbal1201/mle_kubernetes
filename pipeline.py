@@ -170,8 +170,11 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
         aiplatform.log_params(metaparams)
 
         # Log metrics
-        aiplatform.log_metric("loss", history.history["loss"][-1])
-        aiplatform.log_metric("val_loss", history.history["val_loss"][-1])
+        metrics = {}
+        metrics["loss"] = history.history["loss"][-1]
+        metrics["val_loss"] = history.history["val_loss"][-1]
+        aiplatform.log_metrics(metrics)
+        
         print("Training metrics logged successfully.")
 
     # # Train the model
