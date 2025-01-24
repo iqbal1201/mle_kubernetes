@@ -32,16 +32,28 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install kfp google-cloud-storage google-cloud-aiplatform
 
-      # Step 1: Run data processing script (data_process.py)
-      - name: Run Data Processing
+      # Step 1: Running Pipeline
+      - name: Model Pipeline
         run: |
-          python data_process.py
+          python pipeline.py
 
-      # Step 2: Train the model (model_train.py) to generate model_tf.h5
-      - name: Train Model
-        run: |
-          python model_train.py
+      - name: Upload Artifacts to GCS
+      run: |
+        export GOOGLE_APPLICATION_CREDENTIALS=${{ secrets.GCP_KEY }}
+        gsutil cp model_tf.h5 gs://mle-kubernetes-bucket/models/latest/model_tf.h5
+        gsutil cp preprocessor.pkl gs://mle-kubernetes-bucket/models/latest/preprocessor.pkl
+
+      # # Step 1: Run data processing script (data_process.py)
+      # - name: Run Data Processing
+      #   run: |
+      #     python data_process.py
+
+      # # Step 2: Train the model (model_train.py) to generate model_tf.h5
+      # - name: Train Model
+      #   run: |
+      #     python model_train.py
 
       # - name: Copy model_tf.h5 for Docker build
       #   run: |
