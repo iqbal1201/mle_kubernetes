@@ -18,7 +18,7 @@ import os
 aiplatform.init(project="ml-kubernetes-448516", location="us-central1")
 
 # # Preprocessing component
-@component(base_image="gcr.io/ml-kubernetes-448516/insurance-ml-app@sha256:edff7280cc499d0de2f3b37a28ece6e12d6629a7b127fd2fb92640738437e22b")
+@component(base_image="gcr.io/ml-kubernetes-448516/vertexai-pipeline:latest")
 def preprocess_data(input_csv: str, preprocessed_data_dir: str) -> str:
     import os
     from sklearn.model_selection import train_test_split
@@ -129,7 +129,7 @@ def preprocess_data(input_csv: str, preprocessed_data_dir: str) -> str:
 
 
 # Model training component
-@component(base_image="gcr.io/ml-kubernetes-448516/insurance-ml-app@sha256:edff7280cc499d0de2f3b37a28ece6e12d6629a7b127fd2fb92640738437e22b")
+@component(base_image="gcr.io/ml-kubernetes-448516/vertexai-pipeline:latest")
 def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
     import os
     import numpy as np
