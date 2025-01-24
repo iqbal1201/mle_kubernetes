@@ -181,7 +181,7 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
     # model.fit(X_train, y_train, epochs=100, validation_data=(X_test, y_test))
 
     
-    aiplatform.end_run()
+    
 
     print(f"Saving model to: {model_output_dir}")
     model_output_file = os.path.join(model_output_dir, "model_tf.h5")
