@@ -1,5 +1,6 @@
 from kfp.v2 import dsl
 from kfp.v2.dsl import component
+from kfp.v2 import compiler
 from google.cloud import aiplatform
 import pandas as pd
 import numpy as np
@@ -20,7 +21,9 @@ def preprocess_data(input_csv: str, preprocessed_data_dir: str) -> str:
     import pickle
 
     # Load dataset
+    print("Loading dataset...")
     df = pd.read_csv(input_csv)
+    print("Dataset loaded successfully.")
 
     # Separate features and target
     X = df.drop('charges', axis=1)
@@ -38,8 +41,10 @@ def preprocess_data(input_csv: str, preprocessed_data_dir: str) -> str:
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
     # Fit and transform the data
+    print("Preprocessing data...")
     X_train = preprocessor.fit_transform(X_train)
     X_test = preprocessor.transform(X_test)
+    print("Data preprocessing completed.")
 
     # Save processed data
     os.makedirs(preprocessed_data_dir, exist_ok=True)
@@ -117,7 +122,14 @@ def tensorflow_pipeline(
 
 
 # Trigger the pipeline
-if __name__ == "_main_":
+if __name__ == "__main__":
+
+    compiler.Compiler().compile(
+        pipeline_func=tensorflow_pipeline,
+        package_path="tensorflow_pipeline.json"
+    )
+
+
     aiplatform.init(project="ml-kubernetes-448516", location="us-central1")
 
     # Create and run the pipeline job
