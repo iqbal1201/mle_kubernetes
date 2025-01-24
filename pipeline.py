@@ -91,6 +91,7 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
     from tensorflow.keras.layers import Dense
     from tensorflow.keras.optimizers import Adam
     import gcsfs
+    import pickle
 
     fs = gcsfs.GCSFileSystem()
 
@@ -130,14 +131,14 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
     model.fit(X_train, y_train, epochs=100, validation_data=(X_test, y_test))
 
     # # Save the model
-    # os.makedirs(model_output_dir, exist_ok=True)
-    # model_path = os.path.join(model_output_dir, 'model_tf.h5')
-    # model.save(model_path)
+    os.makedirs(model_output_dir, exist_ok=True)
+    model_path = os.path.join(model_output_dir, 'model_tf.h5')
+    model.save(model_path)
 
-     # Save preprocessor to GCS
-    with fs.open(f"{model_output_dir}/preprocessor.pkl", "wb") as f:
-        pickle.dump(model, f)
-    print("Preprocessor saved successfully.")
+    #  # Save preprocessor to GCS
+    # with fs.open(f"{model_output_dir}/model_tf.h5", "wb") as f:
+    #     pickle.dump(model, f)
+    # print("Preprocessor saved successfully.")
 
     # Register the model in Vertex AI Model Registry in Vertex AI
     
