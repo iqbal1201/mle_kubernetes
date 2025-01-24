@@ -29,6 +29,9 @@ def preprocess_data(input_csv: str, preprocessed_data_dir: str) -> str:
     import pickle
     import gcsfs
 
+
+    preprocessed_data_dir = preprocessed_data_dir.rstrip('/')
+
     fs = gcsfs.GCSFileSystem()
 
     # Load dataset
