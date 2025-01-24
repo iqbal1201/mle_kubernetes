@@ -15,6 +15,7 @@ jobs:
       GCP_PROJECT_ID: ml-kubernetes-448516
       GKE_CLUSTER_NAME: insurance-cluster
       GKE_ZONE: us-central1
+      GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_KEY }}
 
     steps:
       # Checkout the repository to get the code
@@ -41,10 +42,10 @@ jobs:
 
       - name: Upload Artifacts to GCS
         run: |
-          export GOOGLE_APPLICATION_CREDENTIALS=${{ secrets.GCP_KEY }}
+        
           gsutil cp model_tf.h5 gs://mle-kubernetes-bucket/models/latest/model_tf.h5
           gsutil cp preprocessor.pkl gs://mle-kubernetes-bucket/models/latest/preprocessor.pkl
-
+       
       # # Step 1: Run data processing script (data_process.py)
       # - name: Run Data Processing
       #   run: |
