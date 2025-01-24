@@ -117,6 +117,11 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
     # y_test = np.load(os.path.join(preprocessed_data_dir, 'y_test.npy'))
 
     # Define the model
+    #Parameter
+    n_epoch =100
+    lr_rate = 0.01
+
+
     model = Sequential([
         Dense(64, activation='relu', input_shape=(X_train.shape[1],)),
         Dense(32, activation='relu'),
@@ -126,7 +131,7 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
     # Compile the model
     model.compile(
         loss='mae',
-        optimizer=Adam(learning_rate=0.01),
+        optimizer=Adam(learning_rate=lr_rate),
         metrics=['mae']
     )
 
@@ -156,11 +161,17 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
     # Log the training job
     with aiplatform.start_run(experiment_name):
         # Train the model
-        history = model.fit(X_train, y_train, epochs=100, validation_data=(X_test, y_test))
+        history = model.fit(X_train, y_train, epochs=n_epoch, validation_data=(X_test, y_test))
+
+        #log params
+        metaparams = {}
+        metaparams["epochs"] = n_epoch
+        metaparams["learning_rate"] = lr_rate
+        aiplatform.log_params(metaparams)
 
         # Log metrics
-        experiment.log_metric("loss", history.history["loss"][-1])
-        experiment.log_metric("val_loss", history.history["val_loss"][-1])
+        aiplatform.log_metric("loss", history.history["loss"][-1])
+        aiplatform.log_metric("val_loss", history.history["val_loss"][-1])
         print("Training metrics logged successfully.")
 
     # # Train the model
