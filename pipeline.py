@@ -98,7 +98,7 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
 # Define the pipeline
 @dsl.pipeline(
     name="tensorflow-regression-pipeline",
-    pipeline_root="gs://mle-kubernetes-bucket/pipeline-root"
+    pipeline_root="gs://ml-kubernetes-bucket/pipeline-root" 
 )
 def tensorflow_pipeline(
     input_csv: str,
