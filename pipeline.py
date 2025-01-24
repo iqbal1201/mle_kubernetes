@@ -156,7 +156,8 @@ if __name__ == "__main__":
             "input_csv": "gs://ml-kubernetes-bucket/insurance.csv",
             "preprocessed_data_dir": "gs://ml-kubernetes-bucket/preprocessed/",
             "model_output_dir": "gs://ml-kubernetes-bucket/models/"
-        }
+        },
+        service_account="github-actions-mle-kubernetes@ml-kubernetes-448516.iam.gserviceaccount.com"  
     )
 
     job.run()
