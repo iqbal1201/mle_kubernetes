@@ -97,6 +97,18 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
     model_path = os.path.join(model_output_dir, 'model_tf.h5')
     model.save(model_path)
 
+    # Register the model in Vertex AI Model Registry in Vertex AI
+    aiplatform.init(project="ml-kubernetes-448516", location="us-central1")
+    registered_model = aiplatform.Model.upload(
+        display_name="tensorflow-regression-model",
+        artifact_uri=model_output_dir,  # Path to the model directory in Cloud Storage
+        serving_container_image_uri="us-docker.pkg.dev/vertex-ai/prediction/tf2-cpu.2-12:latest"
+    )
+
+    print(f"Model registered with ID: {registered_model.resource_name}")
+
+    return model_output_dir
+
     return model_output_dir
 
 
