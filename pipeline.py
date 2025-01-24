@@ -132,10 +132,10 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
 
     # Generate a unique experiment name 
     # Specify a name for the experiment
-    experiment_name = "tensorflow-regression-experiment"
+    experiment_name = "tf-regres"
 
-    if experiment_name == "tensorflow-regression-experiment":
-        experiment_name = f"tensorflow-regression-experiment-{uuid.uuid1()}"  
+    if experiment_name == "tf-regres":
+        experiment_name = f"tf-regres-{uuid.uuid1()}"  
 
     # aiplatform.init(experiment= experiment_name)
     # aiplatform.start_run("run-1") 
