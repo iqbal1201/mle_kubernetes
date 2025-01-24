@@ -43,7 +43,7 @@ jobs:
           pip install -r requirements.txt
           pip install kfp google-cloud-storage google-cloud-aiplatform google-auth python-dotenv
 
-      - name: Create .env arquive
+      - name: Create .env file python
         run: |
           echo "GCP_KEY=${{ secrets.GCP_KEY }}" >> ./.env
 
