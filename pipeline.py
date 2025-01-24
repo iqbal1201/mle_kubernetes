@@ -117,7 +117,7 @@ def tensorflow_pipeline(
 
 
 # Trigger the pipeline
-if _name_ == "_main_":
+if __name__ == "_main_":
     aiplatform.init(project="ml-kubernetes-448516", location="us-central1")
 
     # Create and run the pipeline job
@@ -125,9 +125,9 @@ if _name_ == "_main_":
         display_name="tensorflow-regression-pipeline-job",
         template_path="tensorflow_pipeline.json",
         parameter_values={
-            "input_csv": "gs://<BUCKET_NAME>/insurance.csv",
-            "preprocessed_data_dir": "gs://<BUCKET_NAME>/preprocessed/",
-            "model_output_dir": "gs://<BUCKET_NAME>/model/"
+            "input_csv": "gs://ml-kubernetes-bucket/insurance.csv",
+            "preprocessed_data_dir": "gs://ml-kubernetes-bucket/preprocessed/",
+            "model_output_dir": "gs://ml-kubernetes/models-bucket/"
         }
     )
 
