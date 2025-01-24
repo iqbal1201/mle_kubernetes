@@ -93,6 +93,7 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
     import gcsfs
     import pickle
     from google.cloud import aiplatform
+    import datetime
 
     fs = gcsfs.GCSFileSystem()
 
@@ -128,10 +129,12 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
         metrics=['mae']
     )
 
-    
+    # Generate a unique experiment name
+    experiment_name = f"tensorflow-regression-experiment-{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}"    
+
     # Create the experiment
     experiment = aiplatform.Experiment.create(
-            experiment_name="tensorflow-regression-experiment",
+            experiment_name=experiment_name,
             description="Experiment for TensorFlow regression model",
         )
     print(f"Experiment created: {experiment.name}")
