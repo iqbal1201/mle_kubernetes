@@ -5,6 +5,7 @@ from google.cloud import aiplatform
 import pandas as pd
 import numpy as np
 import pickle
+import json
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.optimizers import Adam
@@ -15,8 +16,11 @@ import os
 
 credentials_path = "service-account-key.json"
 
+with open(credentials_path, "r") as f:
+    service_account_info = json.load(f)
+
 # Create credentials from the service account info
-credentials = service_account.Credentials.from_service_account_info(credentials_path)
+credentials = service_account.Credentials.from_service_account_info(service_account_info)
 aiplatform.init(project="ml-kubernetes-448516", location="us-central1", credentials =credentials)
 
 # Preprocessing component
