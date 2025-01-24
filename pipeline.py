@@ -8,6 +8,22 @@ import pickle
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.optimizers import Adam
+from google.oauth2 import service_account
+import json
+import os
+
+
+gcp_key = os.getenv("GCP_KEY")
+
+if not gcp_key:
+    raise ValueError("GCP_KEY environment variable is not set.")
+
+# Parse the service account key from JSON string
+service_account_info = json.loads(gcp_key)
+
+# Create credentials from the service account info
+credentials = service_account.Credentials.from_service_account_info(service_account_info)
+aiplatform.init(project="ml-kubernetes-448516", location="us-central1", credentials =credentials)
 
 # Preprocessing component
 @component
@@ -98,7 +114,7 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
     model.save(model_path)
 
     # Register the model in Vertex AI Model Registry in Vertex AI
-    aiplatform.init(project="ml-kubernetes-448516", location="us-central1")
+    
     registered_model = aiplatform.Model.upload(
         display_name="tensorflow-regression-model",
         artifact_uri=model_output_dir,  # Path to the model directory in Cloud Storage
@@ -142,7 +158,7 @@ if __name__ == "__main__":
     )
 
 
-    aiplatform.init(project="ml-kubernetes-448516", location="us-central1")
+    aiplatform.init(project="ml-kubernetes-448516", location="us-central1", )
 
     # Create and run the pipeline job
     job = aiplatform.PipelineJob(
