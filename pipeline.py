@@ -159,4 +159,4 @@ if __name__ == "__main__":
         }
     )
 
-    job.run(service_account="github-actions-mle-kubernetes@ml-kubernetes-448516.iam.gserviceaccount.com")
+    job.run()
