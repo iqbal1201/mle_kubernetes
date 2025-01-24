@@ -14,14 +14,7 @@ import json
 import os
 
 
-credentials_path = "service-account-key.json"
-
-with open(credentials_path, "r") as f:
-    service_account_info = json.load(f)
-
-# Create credentials from the service account info
-credentials = service_account.Credentials.from_service_account_info(service_account_info)
-aiplatform.init(project="ml-kubernetes-448516", location="us-central1", credentials =credentials)
+aiplatform.init(project="ml-kubernetes-448516", location="us-central1")
 
 # Preprocessing component
 @component
