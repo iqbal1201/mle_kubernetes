@@ -27,6 +27,9 @@ def preprocess_data(input_csv: str, preprocessed_data_dir: str) -> str:
     import pandas as pd
     import numpy as np
     import pickle
+    import gcsfs
+
+    fs = gcsfs.GCSFileSystem()
 
     # Load dataset
     print("Loading dataset...")
@@ -54,78 +57,35 @@ def preprocess_data(input_csv: str, preprocessed_data_dir: str) -> str:
     X_test = preprocessor.transform(X_test)
     print("Data preprocessing completed.")
 
-    # Save processed data
-    os.makedirs(preprocessed_data_dir, exist_ok=True)
-    np.save(os.path.join(preprocessed_data_dir, 'X_train.npy'), X_train)
-    np.save(os.path.join(preprocessed_data_dir, 'X_test.npy'), X_test)
-    np.save(os.path.join(preprocessed_data_dir, 'y_train.npy'), y_train)
-    np.save(os.path.join(preprocessed_data_dir, 'y_test.npy'), y_test)
+    # # Save processed data
+    # os.makedirs(preprocessed_data_dir, exist_ok=True)
+    # np.save(os.path.join(preprocessed_data_dir, 'X_train.npy'), X_train)
+    # np.save(os.path.join(preprocessed_data_dir, 'X_test.npy'), X_test)
+    # np.save(os.path.join(preprocessed_data_dir, 'y_train.npy'), y_train)
+    # np.save(os.path.join(preprocessed_data_dir, 'y_test.npy'), y_test)
 
-    # Save preprocessor
-    with open(os.path.join(preprocessed_data_dir, 'preprocessor.pkl'), 'wb') as f:
+    # # Save preprocessor
+    # with open(os.path.join(preprocessed_data_dir, 'preprocessor.pkl'), 'wb') as f:
+    #     pickle.dump(preprocessor, f)
+
+    # Save processed data to GCS
+    print(f"Saving preprocessed data to {preprocessed_data_dir}...")
+    with fs.open(f"{preprocessed_data_dir}/X_train.npy", "wb") as f:
+        np.save(f, X_train)
+    with fs.open(f"{preprocessed_data_dir}/X_test.npy", "wb") as f:
+        np.save(f, X_test)
+    with fs.open(f"{preprocessed_data_dir}/y_train.npy", "wb") as f:
+        np.save(f, y_train)
+    with fs.open(f"{preprocessed_data_dir}/y_test.npy", "wb") as f:
+        np.save(f, y_test)
+    print("Preprocessed data saved successfully.")
+
+    # Save preprocessor to GCS
+    with fs.open(f"{preprocessed_data_dir}/preprocessor.pkl", "wb") as f:
         pickle.dump(preprocessor, f)
+    print("Preprocessor saved successfully.")
 
     return preprocessed_data_dir
-
-
-# @component(base_image="gcr.io/ml-kubernetes-448516/insurance-ml-app:latest")  # Explicitly specify the base image
-# def preprocess_data(input_csv: str, preprocessed_data_dir: str) -> str:
-#     import subprocess
-#     import sys
-#     import os
-#     import pandas as pd
-#     import numpy as np
-#     import pickle
-#     from sklearn.model_selection import train_test_split
-#     from sklearn.preprocessing import StandardScaler, OneHotEncoder
-#     from sklearn.compose import ColumnTransformer
-
-#     try:
-#         # Install dependencies
-#         subprocess.check_call([sys.executable, "-m", "pip", "install", "scikit-learn==1.5.1", "pandas==2.2.2", "numpy"])
-
-#         # Load dataset
-#         print("Loading dataset...")
-#         df = pd.read_csv(input_csv)
-#         print("Dataset loaded successfully.")
-
-#         # Separate features and target
-#         X = df.drop('charges', axis=1)
-#         y = df['charges']
-
-#         # Preprocessing
-#         preprocessor = ColumnTransformer(
-#             transformers=[
-#                 ('num', StandardScaler(), ['age', 'bmi', 'children']),
-#                 ('cat', OneHotEncoder(), ['sex', 'smoker', 'region'])
-#             ]
-#         )
-
-#         # Split the data
-#         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-#         # Fit and transform the data
-#         print("Preprocessing data...")
-#         X_train = preprocessor.fit_transform(X_train)
-#         X_test = preprocessor.transform(X_test)
-#         print("Data preprocessing completed.")
-
-#         # Save processed data
-#         os.makedirs(preprocessed_data_dir, exist_ok=True)
-#         np.save(os.path.join(preprocessed_data_dir, 'X_train.npy'), X_train)
-#         np.save(os.path.join(preprocessed_data_dir, 'X_test.npy'), X_test)
-#         np.save(os.path.join(preprocessed_data_dir, 'y_train.npy'), y_train)
-#         np.save(os.path.join(preprocessed_data_dir, 'y_test.npy'), y_test)
-
-#         # Save preprocessor
-#         with open(os.path.join(preprocessed_data_dir, 'preprocessor.pkl'), 'wb') as f:
-#             pickle.dump(preprocessor, f)
-
-#         return preprocessed_data_dir
-
-#     except Exception as e:
-#         print(f"Error during preprocessing: {e}")
-#         raise
 
 
 # Model training component
@@ -221,3 +181,4 @@ if __name__ == "__main__":
     )
 
     job.run()
+
