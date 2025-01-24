@@ -128,6 +128,14 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
         metrics=['mae']
     )
 
+    
+    # Create the experiment
+    experiment = aiplatform.Experiment.create(
+            experiment_name="tensorflow-regression-experiment",
+            description="Experiment for TensorFlow regression model",
+        )
+    print(f"Experiment created: {experiment.name}")
+
     # Start an experiment
     experiment = aiplatform.Experiment("tensorflow-regression-experiment")
 
