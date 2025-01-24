@@ -2,6 +2,7 @@ from kfp.v2 import dsl
 from kfp.v2.dsl import component
 from kfp.v2 import compiler
 from google.cloud import aiplatform
+from google.cloud.aiplatform import pipeline_jobs
 import pandas as pd
 import numpy as np
 import pickle
@@ -14,7 +15,7 @@ import json
 import os
 
 
-aiplatform.init(project="ml-kubernetes-448516", location="us-central1", service_account="github-actions-mle-kubernetes@ml-kubernetes-448516.iam.gserviceaccount.com")
+aiplatform.init(project="ml-kubernetes-448516", location="us-central1")
 
 # Preprocessing component
 @component
@@ -149,15 +150,14 @@ if __name__ == "__main__":
 
 
     # Create and run the pipeline job
-    job = aiplatform.PipelineJob(
+    job = pipeline_jobs.PipelineJob(
         display_name="tensorflow-regression-pipeline-job",
         template_path="tensorflow_pipeline.json",
         parameter_values={
             "input_csv": "gs://ml-kubernetes-bucket/insurance.csv",
             "preprocessed_data_dir": "gs://ml-kubernetes-bucket/preprocessed/",
             "model_output_dir": "gs://ml-kubernetes-bucket/models/"
-        },
-        service_account="github-actions-mle-kubernetes@ml-kubernetes-448516.iam.gserviceaccount.com"  
+        }
     )
 
     job.run()
