@@ -14,7 +14,7 @@ import json
 import os
 
 
-aiplatform.init(project="ml-kubernetes-448516", location="us-central1")
+aiplatform.init(project="ml-kubernetes-448516", location="us-central1", service_account="github-actions-mle-kubernetes@ml-kubernetes-448516.iam.gserviceaccount.com")
 
 # Preprocessing component
 @component
