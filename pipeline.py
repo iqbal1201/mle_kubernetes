@@ -148,6 +148,9 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
     print(f"Experiment created: {experiment.name}")
 
     # Start an experiment
+
+    # Initialize Vertex AI with the experiment
+    aiplatform.init(project="ml-kubernetes-448516", location="us-central1", experiment=experiment_name)
     
 
     # Log the training job
