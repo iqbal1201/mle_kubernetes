@@ -11,6 +11,9 @@ from tensorflow.keras.optimizers import Adam
 from google.oauth2 import service_account
 import json
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 gcp_key = os.getenv("GCP_KEY")
