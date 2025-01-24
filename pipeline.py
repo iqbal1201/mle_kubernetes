@@ -17,6 +17,7 @@ load_dotenv()
 
 
 gcp_key = os.getenv("GCP_KEY")
+gcp_key = gcp_key.replace("\n", "")
 
 if not gcp_key:
     raise ValueError("GCP_KEY environment variable is not set.")
