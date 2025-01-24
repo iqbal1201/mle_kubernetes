@@ -43,8 +43,8 @@ jobs:
       - name: Upload Artifacts to GCS
         run: |
         
-          gsutil cp model_tf.h5 gs://mle-kubernetes-bucket/models/latest/model_tf.h5
-          gsutil cp preprocessor.pkl gs://mle-kubernetes-bucket/models/latest/preprocessor.pkl
+          gsutil cp model_tf.h5 gs://ml-kubernetes-bucket/models/latest/model_tf.h5
+          gsutil cp preprocessor.pkl gs://ml-kubernetes-bucket/models/latest/preprocessor.pkl
        
       # # Step 1: Run data processing script (data_process.py)
       # - name: Run Data Processing

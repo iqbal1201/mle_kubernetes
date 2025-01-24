@@ -127,7 +127,7 @@ if __name__ == "_main_":
         parameter_values={
             "input_csv": "gs://ml-kubernetes-bucket/insurance.csv",
             "preprocessed_data_dir": "gs://ml-kubernetes-bucket/preprocessed/",
-            "model_output_dir": "gs://ml-kubernetes/models-bucket/"
+            "model_output_dir": "gs://ml-kubernetes-bucket/models/"
         }
     )
 
