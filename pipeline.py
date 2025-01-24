@@ -116,7 +116,6 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
 
     return model_output_dir
 
-    return model_output_dir
 
 
 # Define the pipeline
@@ -149,8 +148,6 @@ if __name__ == "__main__":
     )
 
 
-    aiplatform.init(project="ml-kubernetes-448516", location="us-central1", )
-
     # Create and run the pipeline job
     job = aiplatform.PipelineJob(
         display_name="tensorflow-regression-pipeline-job",
@@ -162,4 +159,4 @@ if __name__ == "__main__":
         }
     )
 
-    job.run()
+    job.run(service_account="github-actions-mle-kubernetes@ml-kubernetes-448516.iam.gserviceaccount.com")
