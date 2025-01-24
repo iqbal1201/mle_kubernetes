@@ -41,7 +41,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install kfp google-cloud-storage google-cloud-aiplatform
+          pip install kfp google-cloud-storage google-cloud-aiplatform google-auth
+
+      - name: Create .env arquive
+        run: |
+          echo "GCP_KEY=${{ secrets.GCP_KEY }}" >> ./.env
 
       # Step 1: Running Pipeline
       - name: Model Pipeline
