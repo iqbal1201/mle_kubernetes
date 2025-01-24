@@ -143,7 +143,7 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
     
 
     # Log the training job
-    with aiplatform.start_run(experiment_name="tensorflow-regression-experiment"):
+    with aiplatform.start_run():
         # Train the model
         history = model.fit(X_train, y_train, epochs=100, validation_data=(X_test, y_test))
 
