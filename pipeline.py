@@ -201,13 +201,13 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
 
     # Register the model in Vertex AI Model Registry in Vertex AI
     
-    registered_model = aiplatform.Model.upload(
-        display_name="tensorflow-regression-model",
-        artifact_uri=model_output_dir,  # Path to the model directory in Cloud Storage
-        serving_container_image_uri="us-docker.pkg.dev/vertex-ai/prediction/tf2-cpu.2-12:latest"
-    )
+    # registered_model = aiplatform.Model.upload(
+    #     display_name="tensorflow-regression-model",
+    #     artifact_uri=model_output_dir,  # Path to the model directory in Cloud Storage
+    #     serving_container_image_uri="us-docker.pkg.dev/vertex-ai/prediction/tf2-cpu.2-12:latest"
+    # )
 
-    print(f"Model registered with ID: {registered_model.resource_name}")
+    # print(f"Model registered with ID: {registered_model.resource_name}")
 
     return model_output_dir
 
