@@ -131,10 +131,14 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
     # Train the model
     model.fit(X_train, y_train, epochs=100, validation_data=(X_test, y_test))
 
-    # # Save the model
-    os.makedirs(model_output_dir, exist_ok=True)
-    model_path = os.path.join(model_output_dir, 'model_tf.h5')
-    model.save(model_path)
+    print(f"Saving model to: {model_output_dir}")
+    model.save(model_output_dir)  # Save in TensorFlow SavedModel format
+    print("Model saved successfully.")
+
+    # # # Save the model
+    # os.makedirs(model_output_dir, exist_ok=True)
+    # model_path = os.path.join(model_output_dir, 'model_tf.h5')
+    # model.save(model_path)
 
     #  # Save preprocessor to GCS
     # with fs.open(f"{model_output_dir}/model_tf.h5", "wb") as f:
