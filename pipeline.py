@@ -92,6 +92,7 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
     from tensorflow.keras.optimizers import Adam
     import gcsfs
     import pickle
+    from google.cloud import aiplatform
 
     fs = gcsfs.GCSFileSystem()
 
