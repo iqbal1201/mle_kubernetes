@@ -60,16 +60,7 @@ def preprocess_data(input_csv: str, preprocessed_data_dir: str) -> str:
     X_test = preprocessor.transform(X_test)
     print("Data preprocessing completed.")
 
-    # # Save processed data
-    # os.makedirs(preprocessed_data_dir, exist_ok=True)
-    # np.save(os.path.join(preprocessed_data_dir, 'X_train.npy'), X_train)
-    # np.save(os.path.join(preprocessed_data_dir, 'X_test.npy'), X_test)
-    # np.save(os.path.join(preprocessed_data_dir, 'y_train.npy'), y_train)
-    # np.save(os.path.join(preprocessed_data_dir, 'y_test.npy'), y_test)
-
-    # # Save preprocessor
-    # with open(os.path.join(preprocessed_data_dir, 'preprocessor.pkl'), 'wb') as f:
-    #     pickle.dump(preprocessor, f)
+   
 
     # Save processed data to GCS
     print(f"Saving preprocessed data to {preprocessed_data_dir}...")
@@ -99,12 +90,27 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
     from tensorflow.keras.models import Sequential
     from tensorflow.keras.layers import Dense
     from tensorflow.keras.optimizers import Adam
+    import gcsfs
+
+    fs = gcsfs.GCSFileSystem()
 
     # Load preprocessed data
-    X_train = np.load(os.path.join(preprocessed_data_dir, 'X_train.npy'))
-    X_test = np.load(os.path.join(preprocessed_data_dir, 'X_test.npy'))
-    y_train = np.load(os.path.join(preprocessed_data_dir, 'y_train.npy'))
-    y_test = np.load(os.path.join(preprocessed_data_dir, 'y_test.npy'))
+    print(f"Loading preprocessed data from: {preprocessed_data_dir}")
+    with fs.open(f"{preprocessed_data_dir}/X_train.npy", "rb") as f:
+        X_train = np.load(f)
+    with fs.open(f"{preprocessed_data_dir}/X_test.npy", "rb") as f:
+        X_test = np.load(f)
+    with fs.open(f"{preprocessed_data_dir}/y_train.npy", "rb") as f:
+        y_train = np.load(f)
+    with fs.open(f"{preprocessed_data_dir}/y_test.npy", "rb") as f:
+        y_test = np.load(f)
+    print("Preprocessed data loaded successfully.")
+
+    # # Load preprocessed data
+    # X_train = np.load(os.path.join(preprocessed_data_dir, 'X_train.npy'))
+    # X_test = np.load(os.path.join(preprocessed_data_dir, 'X_test.npy'))
+    # y_train = np.load(os.path.join(preprocessed_data_dir, 'y_train.npy'))
+    # y_test = np.load(os.path.join(preprocessed_data_dir, 'y_test.npy'))
 
     # Define the model
     model = Sequential([
@@ -123,10 +129,15 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
     # Train the model
     model.fit(X_train, y_train, epochs=100, validation_data=(X_test, y_test))
 
-    # Save the model
-    os.makedirs(model_output_dir, exist_ok=True)
-    model_path = os.path.join(model_output_dir, 'model_tf.h5')
-    model.save(model_path)
+    # # Save the model
+    # os.makedirs(model_output_dir, exist_ok=True)
+    # model_path = os.path.join(model_output_dir, 'model_tf.h5')
+    # model.save(model_path)
+
+     # Save preprocessor to GCS
+    with fs.open(f"{model_output_dir}/preprocessor.pkl", "wb") as f:
+        pickle.dump(model, f)
+    print("Preprocessor saved successfully.")
 
     # Register the model in Vertex AI Model Registry in Vertex AI
     
