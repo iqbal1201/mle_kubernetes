@@ -128,12 +128,27 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
         metrics=['mae']
     )
 
-    # Train the model
-    model.fit(X_train, y_train, epochs=100, validation_data=(X_test, y_test))
+    # Start an experiment
+    experiment = aiplatform.Experiment("tensorflow-regression-experiment")
+
+    # Log the training job
+    with experiment.start_run():
+        # Train the model
+        history = model.fit(X_train, y_train, epochs=100, validation_data=(X_test, y_test))
+
+        # Log metrics
+        experiment.log_metric("loss", history.history["loss"][-1])
+        experiment.log_metric("val_loss", history.history["val_loss"][-1])
+        print("Training metrics logged successfully.")
+
+    # # Train the model
+    # model.fit(X_train, y_train, epochs=100, validation_data=(X_test, y_test))
 
     print(f"Saving model to: {model_output_dir}")
-    model.save(model_output_dir)  # Save in TensorFlow SavedModel format
+    model_output_file = os.path.join(model_output_dir, "model_tf.h5")
+    model.save(model_output_file)  # Save in TensorFlow SavedModel format
     print("Model saved successfully.")
+
 
     # # # Save the model
     # os.makedirs(model_output_dir, exist_ok=True)
