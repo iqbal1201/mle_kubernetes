@@ -1,6 +1,6 @@
-from kfp.v2 import dsl
-from kfp.v2.dsl import component
-from kfp.v2 import compiler
+from kfp import dsl
+from kfp.dsl import component
+from kfp import compiler
 from google.cloud import aiplatform
 from google.cloud.aiplatform import pipeline_jobs
 import pandas as pd
@@ -17,55 +17,115 @@ import os
 
 aiplatform.init(project="ml-kubernetes-448516", location="us-central1")
 
-# Preprocessing component
-@component
+# # Preprocessing component
+# @component
+# def preprocess_data(input_csv: str, preprocessed_data_dir: str) -> str:
+#     import os
+#     from sklearn.model_selection import train_test_split
+#     from sklearn.preprocessing import StandardScaler, OneHotEncoder
+#     from sklearn.compose import ColumnTransformer
+#     import pandas as pd
+#     import numpy as np
+#     import pickle
+
+#     # Load dataset
+#     print("Loading dataset...")
+#     df = pd.read_csv(input_csv)
+#     print("Dataset loaded successfully.")
+
+#     # Separate features and target
+#     X = df.drop('charges', axis=1)
+#     y = df['charges']
+
+#     # Preprocessing
+#     preprocessor = ColumnTransformer(
+#         transformers=[
+#             ('num', StandardScaler(), ['age', 'bmi', 'children']),
+#             ('cat', OneHotEncoder(), ['sex', 'smoker', 'region'])
+#         ]
+#     )
+
+#     # Split the data
+#     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+#     # Fit and transform the data
+#     print("Preprocessing data...")
+#     X_train = preprocessor.fit_transform(X_train)
+#     X_test = preprocessor.transform(X_test)
+#     print("Data preprocessing completed.")
+
+#     # Save processed data
+#     os.makedirs(preprocessed_data_dir, exist_ok=True)
+#     np.save(os.path.join(preprocessed_data_dir, 'X_train.npy'), X_train)
+#     np.save(os.path.join(preprocessed_data_dir, 'X_test.npy'), X_test)
+#     np.save(os.path.join(preprocessed_data_dir, 'y_train.npy'), y_train)
+#     np.save(os.path.join(preprocessed_data_dir, 'y_test.npy'), y_test)
+
+#     # Save preprocessor
+#     with open(os.path.join(preprocessed_data_dir, 'preprocessor.pkl'), 'wb') as f:
+#         pickle.dump(preprocessor, f)
+
+#     return preprocessed_data_dir
+
+
+@component(base_image="python:3.10")  # Explicitly specify the base image
 def preprocess_data(input_csv: str, preprocessed_data_dir: str) -> str:
+    import subprocess
+    import sys
     import os
-    from sklearn.model_selection import train_test_split
-    from sklearn.preprocessing import StandardScaler, OneHotEncoder
-    from sklearn.compose import ColumnTransformer
     import pandas as pd
     import numpy as np
     import pickle
+    from sklearn.model_selection import train_test_split
+    from sklearn.preprocessing import StandardScaler, OneHotEncoder
+    from sklearn.compose import ColumnTransformer
 
-    # Load dataset
-    print("Loading dataset...")
-    df = pd.read_csv(input_csv)
-    print("Dataset loaded successfully.")
+    try:
+        # Install dependencies
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "scikit-learn==1.5.1", "pandas==2.2.2", "numpy"])
 
-    # Separate features and target
-    X = df.drop('charges', axis=1)
-    y = df['charges']
+        # Load dataset
+        print("Loading dataset...")
+        df = pd.read_csv(input_csv)
+        print("Dataset loaded successfully.")
 
-    # Preprocessing
-    preprocessor = ColumnTransformer(
-        transformers=[
-            ('num', StandardScaler(), ['age', 'bmi', 'children']),
-            ('cat', OneHotEncoder(), ['sex', 'smoker', 'region'])
-        ]
-    )
+        # Separate features and target
+        X = df.drop('charges', axis=1)
+        y = df['charges']
 
-    # Split the data
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        # Preprocessing
+        preprocessor = ColumnTransformer(
+            transformers=[
+                ('num', StandardScaler(), ['age', 'bmi', 'children']),
+                ('cat', OneHotEncoder(), ['sex', 'smoker', 'region'])
+            ]
+        )
 
-    # Fit and transform the data
-    print("Preprocessing data...")
-    X_train = preprocessor.fit_transform(X_train)
-    X_test = preprocessor.transform(X_test)
-    print("Data preprocessing completed.")
+        # Split the data
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # Save processed data
-    os.makedirs(preprocessed_data_dir, exist_ok=True)
-    np.save(os.path.join(preprocessed_data_dir, 'X_train.npy'), X_train)
-    np.save(os.path.join(preprocessed_data_dir, 'X_test.npy'), X_test)
-    np.save(os.path.join(preprocessed_data_dir, 'y_train.npy'), y_train)
-    np.save(os.path.join(preprocessed_data_dir, 'y_test.npy'), y_test)
+        # Fit and transform the data
+        print("Preprocessing data...")
+        X_train = preprocessor.fit_transform(X_train)
+        X_test = preprocessor.transform(X_test)
+        print("Data preprocessing completed.")
 
-    # Save preprocessor
-    with open(os.path.join(preprocessed_data_dir, 'preprocessor.pkl'), 'wb') as f:
-        pickle.dump(preprocessor, f)
+        # Save processed data
+        os.makedirs(preprocessed_data_dir, exist_ok=True)
+        np.save(os.path.join(preprocessed_data_dir, 'X_train.npy'), X_train)
+        np.save(os.path.join(preprocessed_data_dir, 'X_test.npy'), X_test)
+        np.save(os.path.join(preprocessed_data_dir, 'y_train.npy'), y_train)
+        np.save(os.path.join(preprocessed_data_dir, 'y_test.npy'), y_test)
 
-    return preprocessed_data_dir
+        # Save preprocessor
+        with open(os.path.join(preprocessed_data_dir, 'preprocessor.pkl'), 'wb') as f:
+            pickle.dump(preprocessor, f)
+
+        return preprocessed_data_dir
+
+    except Exception as e:
+        print(f"Error during preprocessing: {e}")
+        raise
 
 
 # Model training component
