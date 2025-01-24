@@ -43,6 +43,12 @@ jobs:
           pip install -r requirements.txt
           pip install kfp google-cloud-storage google-cloud-aiplatform
 
+      # Authenticate with Google Cloud
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
       # Step 1: Running Pipeline
       - name: Model Pipeline
         run: |
