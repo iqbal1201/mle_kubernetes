@@ -94,6 +94,7 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
     import pickle
     from google.cloud import aiplatform
     import datetime
+    import uuid
 
     fs = gcsfs.GCSFileSystem()
 
@@ -129,8 +130,15 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
         metrics=['mae']
     )
 
-    # Generate a unique experiment name
-    experiment_name = f"tensorflow-regression-experiment-{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}"    
+    # Generate a unique experiment name 
+    # Specify a name for the experiment
+    experiment_name = "tensorflow-regression_experiment"
+
+    if experiment_name == "tensorflow-regression_experiment":
+        experiment_name = f"tensorflow-regression_experiment-{uuid.uuid1()}"  
+
+    # aiplatform.init(experiment= experiment_name)
+    # aiplatform.start_run("run-1") 
 
     # Create the experiment
     experiment = aiplatform.Experiment.create(
@@ -143,7 +151,7 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
     
 
     # Log the training job
-    with experiment.start_run():
+    with aiplatform.start_run(experiment_name):
         # Train the model
         history = model.fit(X_train, y_train, epochs=100, validation_data=(X_test, y_test))
 
@@ -154,6 +162,9 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
 
     # # Train the model
     # model.fit(X_train, y_train, epochs=100, validation_data=(X_test, y_test))
+
+    
+    run.end_run()
 
     print(f"Saving model to: {model_output_dir}")
     model_output_file = os.path.join(model_output_dir, "model_tf.h5")
