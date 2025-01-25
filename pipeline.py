@@ -110,11 +110,7 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
         y_test = np.load(f)
     print("Preprocessed data loaded successfully.")
 
-    # # Load preprocessed data
-    # X_train = np.load(os.path.join(preprocessed_data_dir, 'X_train.npy'))
-    # X_test = np.load(os.path.join(preprocessed_data_dir, 'X_test.npy'))
-    # y_train = np.load(os.path.join(preprocessed_data_dir, 'y_train.npy'))
-    # y_test = np.load(os.path.join(preprocessed_data_dir, 'y_test.npy'))
+   
 
     # Define the model
     #Parameter
@@ -198,6 +194,7 @@ def train_model(preprocessed_data_dir: str, model_output_dir: str) -> str:
     # with fs.open(f"{model_output_dir}/model_tf.h5", "wb") as f:
     #     pickle.dump(model, f)
     # print("Preprocessor saved successfully.")
+    # Skipped
 
     # Register the model in Vertex AI Model Registry in Vertex AI
     
